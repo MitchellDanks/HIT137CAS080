@@ -1,0 +1,25 @@
+#Cite language library publishers
+#Bird, Steven, Edward Loper and Ewan Klein (2009), Natural Language Processing with Python. O’Reilly Media Inc.
+#cmd "pip install nltk" "nltk.download('all')"
+#pandas library for reading .csv files
+#cmd "pip install pandas"
+import pandas as pd
+import nltk
+from nltk.tokenize import word_tokenize
+#Read and extract text from .csv file column (file_path, text_column)
+def extract_text(E:\chuditchwerkroom\2024_Werkroom\0000_CDU\2024_CDU\2024 SEM 2\HIT137\Assignment 2\Assignment 2,text_A)
+#read the csv file 
+df =pd.read_csv(E:\chuditchwerkroom\2024_Werkroom\0000_CDU\2024_CDU\2024 SEM 2\HIT137\Assignment 2)
+#Extract from specific column
+return df[text_column].dropna().tolist()
+#list of csv files
+csv_files = ['CSV1.csv','CSV2.csv','CSV3.csv''CSV4.csv']
+collatedtext=[]
+for file in csv_files:
+        text_list=extract_text_from_csv(file,'text_column_name')
+        collatedtext.extend(text_list)
+#Read collated text with NLTK (tokenize)
+tokenized_texts=[word_tokenize(text)for text in collatedtext]
+#print tokenised text
+for tokens in tokenized_texts:
+        print(tokens)

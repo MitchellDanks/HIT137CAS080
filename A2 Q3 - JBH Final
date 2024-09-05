@@ -1,0 +1,90 @@
+# Q3 Fixing the error-prone codes.
+# Below is the code (left) that is encrypted using a number. Once you decrypt the below code, it reveals the original code with many errors. Please fix them and explain them using comments (#).
+
+# the Encrypter
+# the key is 13. this was found by running a For loop from 1 -> 26 to show every possible outcome.
+# loop 13 showed "tybony_inevnoyr" -> "global_variable" (this means the Encrypter is also the decrypter)
+def encrypt(text, key):
+    encrypted_text = ""
+    for char in text:
+        if char.isalpha():
+            shifted = ord(char) + key
+            if char.islower():
+                if shifted > ord('z'):
+                    shifted -= 26
+                elif shifted < ord('a'):
+                    shifted += 26
+            elif char.isupper():
+                if shifted > ord('Z'):
+                    shifted -= 26
+                elif shifted < ord('A'):
+                    shifted += 26
+            encrypted_text += chr(shifted)
+        else:
+            encrypted_text += char
+    return encrypted_text
+
+# Find the key, 
+
+for i in range(26):
+    print(f"try key {i+1}: ", encrypt("tybony_inevnoyr", i+1))
+
+
+# print the new code and store in .txt file by decrypting existing code.
+
+FE = open("encrypted_text.txt", 'r'); FD = open("decrypt_text.txt", 'w')
+for line in FE:
+    line = line.strip()
+    FD.write(encrypt(line,13) + "\n")
+FE.close(); FD.close()
+
+
+#new code to correct
+
+global_variable = 100
+
+# 'key4':'value4' was added due to referanced below.
+my_dict = {'key1':'value1', 'key2':'value2', 'key3':'value3', 'key4':'value4'}
+
+# Function 1. this Function appears to take an array and remove the even numbers from the array that are lower than the local_variable.
+def process_numbers(list):                      # process_numbers() -> process_numbers(list)
+    global global_variable                      # this calls out and captures the 'global_variable' value inside the code
+    local_variable = global_variable            # this dident equal anything made equal global_variable
+    numbers = []                                # numbers = [1, 2, 3, 4, 5] -> numbers = []
+    numbers.extend(list)                        # adds one of each value from the list
+
+    while local_variable > 0:                                                   # only work while local_variable is greater than 0
+        if (local_variable % 2 == 0) and (numbers.count(local_variable) > 0):   # if local_variable % 2 == 0: -> if (local_variable % 2 == 0) and (numbers.count(local_variable) > 0):
+            numbers.remove(local_variable)                                      # removes one instance of the provided number
+        local_variable -= 1                                                     # reduce local_variable
+
+    return numbers                              # return the array that was submitted
+    
+my_set = {1, 2, 3, 4, 5, 5, 4, 3, 2, 1}
+result = process_numbers(my_set)                # "process_numbers(numbers=my_set)" changed to "process_numbers(my_set)"
+
+# Function 2. this function appears to modify a Dictonary value                                              
+def modify_dict(key_Num, Num):                  # modify_dict() -> modify_dict(key_Num, Num), This now calls the key and set value
+    #local_variable = 10                        # this is not required
+    my_dict[key_Num] = Num                      # my_dict['key4'] = local_variable -> my_dict[key_Num] = Num, this sets key to value of 5 original code below.
+
+modify_dict('key4', 5)                          # modify_dict(5) -> modify_dict('key4', 5)
+
+#Function 3. this function appears to add 10 to the global_variable.
+def update_global():                            # this works fine just not called in code later to be actioned.
+    global global_variable
+    global_variable += 10
+
+#for loop this part of code seems to print values 1~5 on different lines.
+for i in range(5):
+    i += 1                                      # Swaped positions of 'print(i)' and 'i += 1'
+    print(i)
+
+# this 'if' statement appears to want to check if 5 is not found in dictonary.
+if my_set != 0 and my_dict['key4'] == 10:       # if my_set is not none and my_dict['key4'] == 10: -> if my_set != 0 and my_dict['key4'] == 10:
+    print("5 not found in the dictionary!")
+
+# print values
+print(global_variable)                          # this will print the current global_variable
+print(my_dict)                                  # this will print the modified my_dict where ('key4' = 5)
+print(my_set)                                   # this will print the my_set without the processed my set

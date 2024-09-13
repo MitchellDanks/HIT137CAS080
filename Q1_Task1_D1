@@ -1,0 +1,38 @@
+#Extract the ‘text’ in all the CSV files and store them into a single ‘.txt file’.
+#Chaper5_Fundamentals of python pp118
+#ensure default set to plain text
+#writing text to file 'r' input 'w' output 
+
+
+
+import os
+import csv
+
+#set directory name to locate the output text file (use / to avoid conflict) 
+# Do we store these on github to make is executable for all of us?
+input_csv = "E:/chuditchwerkroom/2024_Werkroom/0000_CDU/2024_CDU/2024 SEM 2/HIT137/Working_Python Files/Assignment 2_HIT137_CAS_080/Q1_CSV files"
+
+#set directory name to locate the output text file (use / to avoid conflict) 
+#Do we store these on github to make is executable for all of us?
+output_txt ="E:/chuditchwerkroom/2024_Werkroom/0000_CDU/2024_CDU/2024 SEM 2/HIT137/Working_Python Files/Assignment 2_HIT137_CAS_080/Q1_txt file_output/HIT137_A2_Q1.1.txt"
+
+#open the output_txt to bring in csv
+with open(output_txt, 'w') as outputfile:
+#loop the csv files (textbook pg65 Looping processes)
+    for filename in os.listdir(input_csv):
+        if filename.endswith('.csv'):
+            file_path = os.path.join(input_csv, filename)
+#open and read csv data (pp120)
+            with open(file_path,'r') as csvfile:
+                reader = csv.reader(csvfile)
+#Write a title for the data to separate each csv file set
+                output_txt.write(f"__________ Data extracted from: {file} __________\n")
+#convert all data to strings
+                for row in reader:
+#Tell writer how to separate out the data                    
+                   output_txt.write(', '.join(row) + '\n')
+                #should close file as not to lose data (pp119 f.close())
+                    file_path.close(input_csv)
+#\n escape character
+#
+#------------------------------------------------------------------------------???Not writing text

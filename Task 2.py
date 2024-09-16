@@ -1,3 +1,4 @@
+#BS_Do we need a way to process the files for each task so they can run on anyones machine like you have 'chapter1.jpg' where is that file path and how does that work on other machines?
 from PIL import Image
 import time
 

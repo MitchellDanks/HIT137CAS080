@@ -1,9 +1,18 @@
 # Q3 Fixing the error-prone codes.
 # Below is the code (left) that is encrypted using a number. Once you decrypt the below code, it reveals the original code with many errors. Please fix them and explain them using comments (#).
 
-# the Encrypter
-# the key is 13. this was found by running a For loop from 1 -> 26 to show every possible outcome.
-# loop 13 showed "tybony_inevnoyr" -> "global_variable" (this means the Encrypter is also the decrypter)
+# the Encrypter (this Encrypter is also the decrypter)
+"""
+this is due to the encrypter cycling through by a set number.
+for example if 'A' is to equal 'Z' we can add 26 or sub 1 from the ord.
+
+to find the key we can simply cycile through the encrypter using a 'for loop'
+by doing so we found that the key is 13.
+as loop 13 (key:13) showed "tybony_inevnoyr" -> "global_variable" (Code commented out below)
+
+then I striped each line from one .txt file decrypted it and placed it in a new .txt file (Code commented out below)
+
+"""
 def encrypt(text, key):
     encrypted_text = ""
     for char in text:
@@ -24,48 +33,79 @@ def encrypt(text, key):
             encrypted_text += char
     return encrypted_text
 
-# Find the key, 
-
+# the for loop used to loop through the encrypt to break it. 
+"""
 for i in range(26):
     print(f"try key {i+1}: ", encrypt("tybony_inevnoyr", i+1))
-
+"""
 
 # print the new code and store in .txt file by decrypting existing code.
-
+"""
 FE = open("encrypted_text.txt", 'r'); FD = open("decrypt_text.txt", 'w')
 for line in FE:
     line = line.strip()
     FD.write(encrypt(line,13) + "\n")
 FE.close(); FD.close()
-
+"""
 
 #new code to correct
-
+"""
+original code comment out above. (if no changes no code above)
+fixed code below with #comments to sides
+"""
 global_variable = 100
 
 # 'key4':'value4' was added due to referanced below.
+"""
+my_dict = {'key1':'value1', 'key2':'value2', 'key3':'value3'}
+"""
 my_dict = {'key1':'value1', 'key2':'value2', 'key3':'value3', 'key4':'value4'}
 
 # Function 1. this Function appears to take an array and remove the even numbers from the array that are lower than the local_variable.
+"""
+def process_numbers():
+    global global_variable
+    local_variable
+    numbers = [1, 2, 3, 4, 5]
+
+    while local_variable > 0:
+        if local_variable % 2 == 0:
+            numbers.remove(local_variable)
+        local_variable -= 1
+
+    return numbers
+"""
 def process_numbers(list):                      # process_numbers() -> process_numbers(list)
     global global_variable                      # this calls out and captures the 'global_variable' value inside the code
     local_variable = global_variable            # this dident equal anything made equal global_variable
     numbers = []                                # numbers = [1, 2, 3, 4, 5] -> numbers = []
-    numbers.extend(list)                        # adds one of each value from the list
+    numbers.extend(list)                        # adds one of each value from the set (sets dont allow duplicates)
 
     while local_variable > 0:                                                   # only work while local_variable is greater than 0
-        if (local_variable % 2 == 0) and (numbers.count(local_variable) > 0):   # if local_variable % 2 == 0: -> if (local_variable % 2 == 0) and (numbers.count(local_variable) > 0):
-            numbers.remove(local_variable)                                      # removes one instance of the provided number
+        if (local_variable % 2 == 0) and (numbers.count(local_variable) > 0):   # if local_variable % 2 == 0: -> if (local_variable % 2 == 0) and (numbers.count(local_variable) > 0): (allow removal if number in set)
+            numbers.remove(local_variable)                                      # removes one instance of the provided number (because its a set it will remove all instances)
         local_variable -= 1                                                     # reduce local_variable
 
     return numbers                              # return the array that was submitted
-    
+
+#set of values for first function
+"""
 my_set = {1, 2, 3, 4, 5, 5, 4, 3, 2, 1}
+result = process_numbers(numbers=my_set)
+"""
+my_set = {1, 2, 3, 4, 5, 5, 4, 3, 2, 1}         # this is set so all duplicates will be removed
 result = process_numbers(my_set)                # "process_numbers(numbers=my_set)" changed to "process_numbers(my_set)"
 
 # Function 2. this function appears to modify a Dictonary value                                              
+"""
+def modify_dict():
+    local_variable = 10
+    my_dict['key4'] = local_variable
+
+modify_dict(5)
+"""
 def modify_dict(key_Num, Num):                  # modify_dict() -> modify_dict(key_Num, Num), This now calls the key and set value
-    #local_variable = 10                        # this is not required
+    #local_variable = 10                        # this is not required?
     my_dict[key_Num] = Num                      # my_dict['key4'] = local_variable -> my_dict[key_Num] = Num, this sets key to value of 5 original code below.
 
 modify_dict('key4', 5)                          # modify_dict(5) -> modify_dict('key4', 5)
@@ -76,15 +116,36 @@ def update_global():                            # this works fine just not calle
     global_variable += 10
 
 #for loop this part of code seems to print values 1~5 on different lines.
+"""
+for i in range(5):
+    print(i)
+    i += 1
+"""
 for i in range(5):
     i += 1                                      # Swaped positions of 'print(i)' and 'i += 1'
     print(i)
 
 # this 'if' statement appears to want to check if 5 is not found in dictonary.
-if my_set != 0 and my_dict['key4'] == 10:       # if my_set is not none and my_dict['key4'] == 10: -> if my_set != 0 and my_dict['key4'] == 10:
+"""
+    if my_set is not none and my_dict['key4'] == 10:
     print("5 not found in the dictionary!")
+"""
+Fc = 0                                              # new variable Fc 'Five Check'
+for i in my_dict:                                   # changed code removed the set cause its not a dictionary. changed to for loop to check all instances in dictonary
+    if my_dict[i] == 5:
+        Fc = my_dict[i]                             # sets the value of Fc to the last key# that was equal to 5 
+if Fc != 5:                                         # if statement then checks Fc and prints acordinly
+    print("5 NOT in the dictionary!")
+else:
+    print("5 FOUND in the dictionary!")
 
 # print values
+"""
+print(global_variable)
+print(my_dict)
+print(my_set)
+"""
 print(global_variable)                          # this will print the current global_variable
 print(my_dict)                                  # this will print the modified my_dict where ('key4' = 5)
-print(my_set)                                   # this will print the my_set without the processed my set
+print(my_set)                                   # this will print the my_set without the processed my_set
+print(result)                                   # this will print the the processed my_set (added)

@@ -1,4 +1,10 @@
 #BS_Do we need a way to process the files for each task so they can run on anyones machine like you have 'chapter1.jpg' where is that file path and how does that work on other machines?
+"""
+JBH 16/09/2024
+@ BS I added Chapter1.jpg to the github Repositorie so if you are using git as long as you have it in the file this will should work.
+
+@ MD my code is erroring on "from PIL import Image" (currently line 8) did you download anything to make this work?
+"""
 from PIL import Image
 import time
 

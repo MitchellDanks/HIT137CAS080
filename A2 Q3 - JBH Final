@@ -1,4 +1,8 @@
 #BS_so how do we handle the files to run on any computer?
+""" JBH 16/09/2024
+This should now be code.
+Following GitHub Setup Tutorial Recording in week 7 in the unit content.
+"""
 # Q3 Fixing the error-prone codes.
 # Below is the code (left) that is encrypted using a number. Once you decrypt the below code, it reveals the original code with many errors. Please fix them and explain them using comments (#).
 

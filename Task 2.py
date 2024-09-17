@@ -16,11 +16,12 @@ from PIL import Image
 import time
 
 #Chapter 1
+print("-- Chapter 1 --" + "\n")
 #Generate number
 current_time = int(time.time())
 generated_number = (current_time % 100) + 50
 if generated_number % 2 == 0: generated_number += 10
-print(generated_number)
+print(f'Number Generated: {generated_number}')
 
 #Load images
 oldimage = 'chapter1.jpg'
@@ -53,9 +54,10 @@ for y in range(height):
         r, _, _ = pixels[x, y]
         red += r
 
-print(red)
+print(f"the total value of red pixels: {red}")
 
 #Chapter 2
+print("\n" + "-- Chapter 2 --" + "\n")
 #i).
 # Define process
 def process_string(s):

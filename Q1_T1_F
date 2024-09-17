@@ -1,0 +1,31 @@
+#talks to the computers operating system to access and manipulate the files
+import os
+#imports functions and tools to manipulate csv files
+import csv
+
+#set directory name to locate the output text file (use / to avoid conflict) 
+input_csv = "C:/Users/thete/OneDrive/Documents/GitHub/HIT137CAS080/Q1_working/Q1_CSV files"
+
+#set directory name to locate the output text file (use / to avoid conflict) 
+output_txt ="C:/Users/thete/OneDrive/Documents/GitHub/HIT137CAS080/Q1_working/Q1_file_output/HIT137_A2_Q1.1.txt"
+
+#open the output_txt to bring in csv
+with open(output_txt, 'w') as outputfile:
+    #loop the csv files (textbook pg65 Looping processes)
+    for filename in os.listdir(input_csv):
+        #filter out unwanted file types
+        if filename.endswith('.csv'):
+            #read all the various csv files as one filepath
+            file_path = os.path.join(input_csv, filename)
+            print('READING DATA...')
+            #open and read csv data (pp120) and (https://realpython.com/python-csv/)
+            with open(file_path,'r') as csvfile:
+                reader = csv.reader(csvfile)
+                #draw in filename from each file to separate data sets from each file!!!!!!!!!!!may not need to keep
+                outputfile.write(f"__________ CSV File: {filename} __________\n")
+                #convert the information to strings comibining rows and separating by(, )
+                for row in reader:               
+                   outputfile.write(', '.join(row) + '\n')
+print(f'-------------------------THANKYOU FOR WAITING--------------------------------------')
+print(f'Your text has been extracted you can now access it in {output_txt}')
+#--------------------------------------------------------------------------------------------------------------

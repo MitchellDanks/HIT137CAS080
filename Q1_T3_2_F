@@ -1,0 +1,55 @@
+#---------------------------------------------------------------------------------------------------------------------------------------------
+#Write a function to get transformers autotokenizer to count unique tokens in the .txt and give back the top 30 words
+
+from transformers import AutoTokenizer
+from collections import Counter
+#removes
+import re
+import csv
+
+output_txt = "C:/Users/thete/OneDrive/Documents/GitHub/HIT137CAS080/Q1_working/Q1_file_output/HIT137_A2_Q1.1.txt"
+
+#This is the funtion to find the top 30 unique words using hugging face (default) autotokenizer (returns tuple word, frequency)
+def get_top_tokens(output_txt, model_name = 'distilbert-base-uncased', top_n=30):
+    #load the tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(model_name,clean_up_tokenization_spaces=False)
+
+    #read the file content
+    with open(output_txt, 'r', encoding = 'utf-8') as f:
+        text = f.read()
+    #remove numbers and symbols and make lowercase
+    text = re.sub(r'\W+', ' ', text.lower())
+    #tokenize the sorted text
+    tokens = tokenizer.tokenize(text)
+    
+    #count the frequency
+    token_counts = Counter(tokens)
+    
+    #return statement for the top n (30) most common
+    return token_counts.most_common(top_n)
+
+#get the top 30 and store them in a variable
+top30_transformers = get_top_tokens(output_txt)
+
+#print(top30_transformers)
+for token, count in top30_transformers:
+    print(f'Word: {token}, Occurence: {count}')
+
+#save to a new csv document
+output_toptrans30_csv = "C:/Users/thete/OneDrive/Documents/GitHub/HIT137CAS080/Q1_working/Q1_file_output/HIT137_A2_Q3.2.csv"
+
+with open(output_toptrans30_csv, 'w', newline ='') as csv_file:
+    writer = csv.writer(csv_file)
+    #add in a header to the csv file for the columns and to compare later
+    writer.writerow (['Second Transformer Library Pass of TOP30'])
+    writer.writerow(['Word','Frequency'])
+    #Write the counts to the file
+    for word, count in top30_transformers:
+        writer.writerow ([word,count])
+
+#print the resulting dictionary
+print('Here is a quick look at the list.')
+for word, count in top30_transformers:
+    print(f'{word}: {count}')
+#show task is complete and location    
+print(f'Your top 30 occurrences have been saved to {output_toptrans30_csv}')

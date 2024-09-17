@@ -1,12 +1,18 @@
+# Group 137
+# Mitchell Danks        S320289 
+# Joshua Hall           S377706 
+# Brooke Stokes         S364762 
+# Repositorie Link      https://github.com/MitchellDanks/HIT137CAS080.git
 
+#--------------------------------------------------------------------------------------
 #to load error library, operating sytem and csv file tools
 import os
 import warnings
 import csv
 
-#ignore update versions messages (not sure they were activly suppressed)
-warnings.filterwarnings('ignore', message = 'possible set union')
-warnings.filterwarnings('ignore', message = 'clean_up_tokenization_spaces')
+#ignore update versions messages
+warnings.filterwarnings('ignore', message='possible set union')
+warnings.filterwarnings('ignore', message='clean_up_tokenization_spaces')
 
 #consider creating a virtual environment to install libraries as recommended
 
@@ -14,12 +20,12 @@ warnings.filterwarnings('ignore', message = 'clean_up_tokenization_spaces')
 import subprocess
 
 #need PyTorch first to run scispacY
-subprocess.run(['pip', 'install','torch'])
+subprocess.run(['pip', 'install', 'torch'])
 
 #access the libraries call the cmd prompt to download required libraries from the internet
-subprocess.run(['pip', 'install','https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_sm-0.5.4.tar.gz'])
-subprocess.run(['pip', 'install','https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_ner_bc5cdr_md-0.5.4.tar.gz'])
-subprocess.run(['pip', 'install','git+https://github.com/huggingface/transformers'])
+subprocess.run(['pip', 'install', 'https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_sm-0.5.4.tar.gz'])
+subprocess.run(['pip', 'install', 'https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_ner_bc5cdr_md-0.5.4.tar.gz'])
+subprocess.run(['pip', 'install', 'git+https://github.com/huggingface/transformers'])
 
 #validate loop to check the installation of the libraries
 try:
@@ -32,7 +38,7 @@ try:
     model_name = 'dmis-lab/biobert-base-cased-v1.1'
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForTokenClassification.from_pretrained(model_name)
-    ner_pipeline = pipeline('ner', model = model, tokenizer = tokenizer)    
+    ner_pipeline = pipeline('ner', model=model, tokenizer=tokenizer)
 
     #Message to validate loading  
     print("----------------------------LOADED----------------------------------")  
@@ -43,208 +49,72 @@ except ImportError as e:
 except OSError as e:
     print(f'Check your operating system: {e}')
 except Exception as e:
-    print(f'Surprise, an unextpected error has occured: {e}')
-#Taken from Q1_T2_task
+    print(f'Surprise, an unexpected error has occurred: {e}')
+
 #-------------------------------------------------------------------------------------------------------------------------------
 #Task 4.1_Use spacy to assess .txt
 #Load the spacy toolset/library
 import spacy
 
-# Load the models for natural language processing nlp training spacey in biomedical knowledge and drugs and diseases respectivley
+# Load the models for natural language processing NLP training with SpaCy in biomedical knowledge and drugs and diseases
 sci_sm_nlp = spacy.load("en_core_sci_sm")
 bc5cdr_nlp = spacy.load("en_ner_bc5cdr_md")
 
+#set directory of .txt file acquired in Q1_Task1
+output_txt ="Question 1/A2_Q1.1.txt"
 
-#set directory of .txt file aquired in Q1_Task1
-output_txt = "C:/Users/thete/OneDrive/Documents/GitHub/HIT137CAS080/Q1_working/Q1_file_output/HIT137_A2_Q1.1.txt"
+#Open file to append chunks to CSV as they are processed to save memory and data loss
+output_spacy_processed = "Question 1/A2_Q1.4_appending.csv"
 
-# Need to use chunk again to break up the size of the file
-def load_large_text_file_in_chunks(file_path, chunk_size=10000):
-    with open(file_path, 'r') as file:
-        while True:
-            chunk = file.read(chunk_size)
-            if not chunk:
-                break
-            yield chunk
-print('Breaking text into chunks..')
-#Look in each chunk and asses for 'diseases' and 'drugs' and create empty lists for each
-def extract_entities_from_chunk(chunk, nlp_model):
-    doc = nlp_model(chunk)
-    diseases = []
-    drugs = []
-    
-    #append and add a label to both instances to each list
-    for ent in doc.ents:
-        if ent.label_ == "DISEASE":
-            diseases.append(ent.text)
-        elif ent.label_ == "CHEMICAL":
-            drugs.append(ent.text)
-    #print('Preparing Lists...')  
-    #return the values to each list
-    return diseases, drugs
-print('Tokenizing...')  
-#Add all the results of chunks to total list
-def process_large_file(input_file, chunk_size=10000):
-    all_diseases = []
-    all_drugs = []
-    #check through with bc5cdr library
-    for chunk in load_large_text_file_in_chunks(input_file, chunk_size):
-        diseases, drugs = extract_entities_from_chunk(chunk, bc5cdr_nlp)
-        all_diseases.extend(diseases)
-        all_drugs.extend(drugs)
-
-    return all_diseases, all_drugs
-print('Assembling lists...') 
-diseases, drugs = process_large_file(output_txt, chunk_size=10000)
-
-# Display list in Terminal
-print("Total Diseases Found:", diseases)
-print("Total Drugs Found:", drugs)
-
-#-------------------------------------------------------------------------------------------------------------------------------
-#Task 4.1_Use NER Pipeline with BioBert to assess .txt
-
-print('Please be patient ... Now processing with BioBERT')
-
-#Load the BioBERT toolset/library and pipeline NER library for processing natural language
-model_name = 'dmis-lab/biobert-base-cased-v1.1'
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForTokenClassification.from_pretrained(model_name)
-ner_pipeline = pipeline('ner', model = model, tokenizer = tokenizer) 
-
-#Load the large text file in chunks
-def load_large_text_file_in_chunks(file_path, chunk_size=10000):
-    with open(file_path, 'r') as file:
+#Load large text file in chunks
+def load_large_text_file_in_chunks(file_path, chunk_size=500):
+    with open(file_path, 'r', encoding='utf-8') as file:
         while True:
             chunk = file.read(chunk_size)
             if not chunk:
                 break
             yield chunk
 
-#Extract words from each chunk using BioBERT library
-def extract_entities_from_chunk(chunk):
+#SpaCy extraction function
+def extract_entities_spacy(chunk):
+    doc = bc5cdr_nlp(chunk)
+    diseases_spacy = [ent.text for ent in doc.ents if ent.label_ == "DISEASE"]
+    drugs_spacy = [ent.text for ent in doc.ents if ent.label_ == "CHEMICAL"]
+    return diseases_spacy, drugs_spacy
+
+#BioBERT extraction function
+def extract_entities_biobert(chunk):
     ner_results = ner_pipeline(chunk)
-    diseases_bert = []
-    drugs_bert = []
-
-    # BioBERT NER doesn't have predefined labels like "DISEASE" or "CHEMICAL" so looks for entities
-    # so you might need to map labels to these categories manually if necessary.
-    for entity in ner_results:
-        if "DISEASE" in entity['entity']:
-            diseases_bert.append(entity['word'])
-        elif "DRUG" in entity['entity']:  
-            drugs_bert.append(entity['word'])
-
+    diseases_bert = [entity['word'] for entity in ner_results if "DISEASE" in entity['entity']]
+    drugs_bert = [entity['word'] for entity in ner_results if "DRUG" in entity['entity']]
     return diseases_bert, drugs_bert
 
-# Main processing for large files
-def process_large_file_with_biobert(input_file, chunk_size=10000):
-    all_diseases_bert = []
-    all_drugs_bert = []
+#Process the chunks with SpaCy and BioBERT, combining the actions
+def process_large_file_append_to_csv(input_file, output_csv, chunk_size=500):
+    # Keep the CSV file open in append mode before processing begins
+    with open(output_csv, 'a', newline='') as csv_file:
+        writer = csv.writer(csv_file)
 
-    for chunk in load_large_text_file_in_chunks(input_file, chunk_size):
-        diseases_bert, drugs_bert = extract_entities_from_chunk(chunk)
-        all_diseases_bert.extend(diseases_bert)
-        all_drugs_bert.extend(drugs_bert)
+        #Write the header into the CSV file
+        writer.writerow(['Spacy Vs BioBERT Library Pass of DISEASES and DRUGS'])
+        writer.writerow(['DISEASES_spacy', 'DRUGS_spacy', 'DISEASES_BERT', 'DRUGS_BERT'])
 
-    return all_diseases_bert, all_drugs_bert
+        #Process file in chunks
+        for chunk in load_large_text_file_in_chunks(input_file, chunk_size):
+            # Pass over looking for diseases and drugs using SpaCy
+            diseases_spacy, drugs_spacy = extract_entities_spacy(chunk)
+            # Pass over looking for diseases and drugs using BioBERT
+            diseases_bert, drugs_bert = extract_entities_biobert(chunk)
 
-diseases_bert, drugs_bert = process_large_file_with_biobert(output_txt, chunk_size=10000)
+            #Sort and write information to append the results for each chunk to the CSV file
+            for i in range(max(len(diseases_spacy), len(drugs_spacy), len(diseases_bert), len(drugs_bert))):
+                writer.writerow([diseases_spacy[i] if i < len(diseases_spacy) else "",
+                                 drugs_spacy[i] if i < len(drugs_spacy) else "",
+                                 diseases_bert[i] if i < len(diseases_bert) else "",
+                                 drugs_bert[i] if i < len(drugs_bert) else ""])
 
-print("Total Diseases Found:", diseases_bert)
-print("Total Drugs Found:", drugs_bert)
+#Call the function to repeat and process
+process_large_file_append_to_csv(output_txt, output_spacy_processed, chunk_size=500)
 
-#----------------------------------------------------------------------------------------------------------
-
-# Output file path for the CSV
-output_spacy_processed = "C:/Users/thete/OneDrive/Documents/GitHub/HIT137CAS080/Q1_working/Q1_file_output/HIT137_A2_Q3.4.csv"
-
-# Opens csv to write data with two headers before data
-with open(output_spacy_processed, 'w', newline='') as csv_file:
-    writer = csv.writer(csv_file)
-    writer.writerow(['Spacy Vs BioBERT Library Pass of DISEASES and DRUGS'])
-    writer.writerow(['DISEASES_spacy' ,'DRUGS_spacy','DISEASES_BERT' ,'DRUGS_BERT'])
-    
-    #Write each token and its frequency into the csv
-        # Write each token and its corresponding results from Spacy and BioBERT into the CSV
-    for i in range(max(len(diseases), len(drugs), len(diseases_bert), len(drugs_bert))):
-        diseases_item = diseases[i] if i < len(diseases) else ""
-        drugs_item = drugs[i] if i < len(drugs) else ""
-        diseases_bert_item = diseases_bert[i] if i < len(diseases_bert) else ""
-        drugs_bert_item = drugs_bert[i] if i < len(drugs_bert) else ""
-        writer.writerow([diseases_item, drugs_item, diseases_bert_item, drugs_bert_item])
-
-# Print in terminal the list using the diseases and drug variables
-print('Here is a quick look at the Spacy and BioBERT results.')
-for i in range(min(5, max(len(diseases), len(drugs), len(diseases_bert), len(drugs_bert)))):
-    diseases_item = diseases[i] if i < len(diseases) else ""
-    drugs_item = drugs[i] if i < len(drugs) else ""
-    diseases_bert_item = diseases_bert[i] if i < len(diseases_bert) else ""
-    drugs_bert_item = drugs_bert[i] if i < len(drugs_bert) else ""
-    print(f'Spacy - Disease: {diseases_item}, Drug: {drugs_item}; BioBERT - Disease: {diseases_bert_item}, Drug: {drugs_bert_item}')
-
-#Print the file location of the csv    
-print(f'Your file can be viewed at {output_spacy_processed}')
-
-#----------------------------------------------------------------------------------------------------------------------------------------------
-#Need to compare result for total entities in both and most common words in both
-
-#top ten results
-from collections import Counter
-
-# Count the occurrences of diseases and drugs in both SpaCy and BioBERT results
-spacy_diseases_counter = Counter(diseases)
-spacy_drugs_counter = Counter(drugs)
-biobert_diseases_counter = Counter(diseases_bert)
-biobert_drugs_counter = Counter(drugs_bert)
-
-# Get the top 10 most common words in SpaCy and BioBERT results
-spacy_common_diseases = spacy_diseases_counter.most_common(10)
-spacy_common_drugs = spacy_drugs_counter.most_common(10)
-biobert_common_diseases = biobert_diseases_counter.most_common(10)
-biobert_common_drugs = biobert_drugs_counter.most_common(10)
-
-# Output CSV file path for the CSV (same file as before)
-output_spacy_processed = "C:/Users/thete/OneDrive/Documents/GitHub/HIT137CAS080/Q1_working/Q1_file_output/HIT137_A2_Q3.4.csv"
-
-# Open the CSV file and write the common words at the top of the existing lists using 'a' not 'w' to append to the earlier write
-with open(output_spacy_processed, 'a', newline='') as csv_file:
-    writer = csv.writer(csv_file)
-    
-    # Write header for the comparison
-    writer.writerow(['Top 10 Diseases and Drugs in SpaCy vs BioBERT'])
-    writer.writerow(['SpaCy Common Diseases', 'BioBERT Common Diseases', 'SpaCy Common Drugs', 'BioBERT Common Drugs'])
-    
-    # Write each common disease and drug comparison formula
-    for i in range(max(len(spacy_common_diseases), len(biobert_common_diseases), len(spacy_common_drugs), len(biobert_common_drugs))):
-        spacy_disease = spacy_common_diseases[i][0] if i < len(spacy_common_diseases) else ""
-        biobert_disease = biobert_common_diseases[i][0] if i < len(biobert_common_diseases) else ""
-        spacy_drug = spacy_common_drugs[i][0] if i < len(spacy_common_drugs) else ""
-        biobert_drug = biobert_common_drugs[i][0] if i < len(biobert_common_drugs) else ""
-        writer.writerow([spacy_disease, biobert_disease, spacy_drug, biobert_drug])
-
-    # Write a blank row to separate comparison from the full data
-    writer.writerow([])
-
-    # Write header for the main data
-    writer.writerow(['Spacy Vs BioBERT Library COMPARE'])
-    writer.writerow(['DISEASES_spacy' ,'DRUGS_spacy','DISEASES_BERT' ,'DRUGS_BERT'])
-    
-    # Write each token and its corresponding results from Spacy and BioBERT into the CSV
-    for i in range(max(len(diseases), len(drugs), len(diseases_bert), len(drugs_bert))):
-        diseases_item = diseases[i] if i < len(diseases) else ""
-        drugs_item = drugs[i] if i < len(drugs) else ""
-        diseases_bert_item = diseases_bert[i] if i < len(diseases_bert) else ""
-        drugs_bert_item = drugs_bert[i] if i < len(drugs_bert) else ""
-        writer.writerow([diseases_item, drugs_item, diseases_bert_item, drugs_bert_item])
-
-# Print the file location of the CSV    
-print(f'Your file with the common word comparison has been saved at {output_spacy_processed}')
-
-# Display the most common diseases and drugs found by SpaCy and BioBERT
-print("\nMost common diseases in SpaCy:", spacy_common_diseases)
-print("Most common drugs in SpaCy:", spacy_common_drugs)
-print("\nMost common diseases in BioBERT:", biobert_common_diseases)
-print("Most common drugs in BioBERT:", biobert_common_drugs)
-
-#####Could that be it????????
+#Notify user that file is being updated
+print(f'Your file is being updated at {output_spacy_processed}')

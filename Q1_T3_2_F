@@ -1,3 +1,10 @@
+# Group 137
+# Mitchell Danks        S320289 
+# Joshua Hall           S377706 
+# Brooke Stokes         S364762 
+# Repositorie Link      https://github.com/MitchellDanks/HIT137CAS080.git
+
+#--------------------------------------------------------------------------------------
 #to load error library
 import os
 import warnings
@@ -50,7 +57,7 @@ import re
 import csv
 
 #add the source file location
-output_txt = "C:/Users/thete/OneDrive/Documents/GitHub/HIT137CAS080/Q1_working/Q1_file_output/HIT137_A2_Q1.1.txt"
+output_txt ="Question 1/A2_Q1.1.txt"
 
 # Function to chunk text into manageable sizes as .txt is too large to process with transformers in one go
 def chunk_text(text, chunk_size=512):
@@ -102,13 +109,13 @@ def get_top_tokens(output_txt, model_name='distilbert-base-uncased', top_n=30):
 top30_transformers = get_top_tokens(output_txt)
 
 # Output file path for the CSV
-output_toptrans30_csv = "C:/Users/thete/OneDrive/Documents/GitHub/HIT137CAS080/Q1_working/Q1_file_output/HIT137_A2_Q3.2.csv"
+output_toptrans30_csv = "Question 1/A2_Q3.2.csv"
 
 # Opens csv to write data with two headers before data
 with open(output_toptrans30_csv, 'w', newline='') as csv_file:
     writer = csv.writer(csv_file)
     writer.writerow(['Second Transformer Library Pass of TOP30'])
-    writer.writerow(['Word', 'Frequency'])
+    writer.writerow(['Word,Frequency'])
     
     #Write each token and its frequency into the csv
     for word, count in top30_transformers:

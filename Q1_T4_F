@@ -1,1 +1,84 @@
 #Task 4 Named-Entity Recognition (NER)
+
+#Install libraries
+#transformers torch tokenizers
+
+#Load BioBERT - from transformers hugging face / load the model and tokenizer from transformers
+
+#Process the .txt File - tokenize
+
+#Pass the tokens through BioBERT
+
+#to load error library
+import os
+import warnings
+
+#ignore update versions messages (not sure they were activly suppressed)
+warnings.filterwarnings('ignore', message = 'possible set union')
+warnings.filterwarnings('ignore', message = 'clean_up_tokenization_spaces')
+
+#consider creating a virtual environment to install libraries as recommended
+
+#pip install or python3<FILE_NAME>.py install
+import subprocess
+
+#access the libraries call the cmd prompt to download required libraries from the internet
+subprocess.run(['pip', 'install','git+https://github.com/huggingface/transformers'])
+
+#validate loop to check the installation of the libraries
+try:
+    import transformers
+    #load Biobert from hugging face
+    from transformers import AutoTokenizer, AutoModel
+    model_name = 'dmis-lab/biobert-base-cased-v1.1'
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModel.from_pretrained(model_name)
+
+    #Message to validate loading  
+    print("----------------------------LOADED----------------------------------")  
+    print("CONGRATULATIONS all libraries were installed and successfully LOADED")
+
+except ImportError as e:
+    print(f'Error in loading library: {e}')
+except OSError as e:
+    print(f'Check your operating system: {e}')
+except Exception as e:
+    print(f'Surprise, an unextpected error has occured: {e}')
+
+
+
+
+#call up csv library
+import csv
+#Use in built python python library to count word occurrences and most_common() for top 30
+from collections import Counter
+
+#set directory of .txt file aquired in Q1_Task1
+output_txt = "C:/Users/thete/OneDrive/Documents/GitHub/HIT137CAS080/Q1_working/Q1_file_output/HIT137_A2_Q1.1.txt"
+#Count word occurances split lines into word blocks
+word_total_count = Counter()
+with open(output_txt) as file:
+    for line in file:
+        word_total_count.update(line.split())
+
+#Find the most common words 30 words from word_count_total
+top30 = word_total_count.most_common(30)
+
+#save to a new csv document
+output_top30_csv = "C:/Users/thete/OneDrive/Documents/GitHub/HIT137CAS080/Q1_working/Q1_file_output/HIT137_A2_Q3.1.csv"
+
+with open(output_top30_csv, 'w', newline ='') as csv_file:
+    writer = csv.writer(csv_file)
+    #add in a header to the csv file for the columns and to compare later
+    writer.writerow (['First Python In Built Library Pass of TOP30'])
+    writer.writerow(['Word','Frequency'])
+    #Write the counts to the file
+    for word, count in top30:
+        writer.writerow ([word,count])
+
+#print the resulting dictionary
+print('Here is a quick look at the list.')
+for word, count in top30:
+    print(f'{word}: {count}')
+#show task is complete and location    
+print(f'Your top 30 occurrences have been saved to {output_top30_csv}')

@@ -29,7 +29,7 @@ with open(output_top30_csv, 'w', newline ='') as csv_file:
         writer.writerow ([word,count])
 
 #print the resulting dictionary
-print('Here is a quick look at the list.')
+print('Here is a quick look at the list....')
 for word, count in top30:
     print(f'{word}: {count}')
 #show task is complete and location    

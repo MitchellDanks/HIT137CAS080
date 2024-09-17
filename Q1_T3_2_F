@@ -1,55 +1,122 @@
+#to load error library
+import os
+import warnings
+
+#ignore update versions messages (not sure they were activly suppressed)
+warnings.filterwarnings('ignore', message = 'possible set union')
+warnings.filterwarnings('ignore', message = 'clean_up_tokenization_spaces')
+
+#consider creating a virtual environment to install libraries as recommended
+
+#pip install or python3<FILE_NAME>.py install
+import subprocess
+
+#need PyTorch first to run scispacY
+subprocess.run(['pip', 'install','torch'])
+
+#access the libraries call the cmd prompt to download required libraries from the internet
+subprocess.run(['pip', 'install','https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_sm-0.5.4.tar.gz'])
+subprocess.run(['pip', 'install','https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_ner_bc5cdr_md-0.5.4.tar.gz'])
+subprocess.run(['pip', 'install','git+https://github.com/huggingface/transformers'])
+
+#validate loop to check the installation of the libraries
+try:
+    #Pytorch is needed to run spacy libraries
+    import torch
+    import transformers
+    from transformers import AutoTokenizer, AutoModel
+    model_name = 'distilbert-base-uncased'
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModel.from_pretrained(model_name)
+
+    #Message to validate loading  
+    print("----------------------------LOADED----------------------------------")  
+    print("CONGRATULATIONS all libraries were installed and successfully LOADED")
+
+except ImportError as e:
+    print(f'Error in loading library: {e}')
+except OSError as e:
+    print(f'Check your operating system: {e}')
+except Exception as e:
+    print(f'Surprise, an unextpected error has occured: {e}')
+#from Q1_T2_task
+
 #---------------------------------------------------------------------------------------------------------------------------------------------
 #Write a function to get transformers autotokenizer to count unique tokens in the .txt and give back the top 30 words
 
 from transformers import AutoTokenizer
 from collections import Counter
-#removes
 import re
 import csv
 
+#add the source file location
 output_txt = "C:/Users/thete/OneDrive/Documents/GitHub/HIT137CAS080/Q1_working/Q1_file_output/HIT137_A2_Q1.1.txt"
 
-#This is the funtion to find the top 30 unique words using hugging face (default) autotokenizer (returns tuple word, frequency)
-def get_top_tokens(output_txt, model_name = 'distilbert-base-uncased', top_n=30):
-    #load the tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(model_name,clean_up_tokenization_spaces=False)
+# Function to chunk text into manageable sizes as .txt is too large to process with transformers in one go
+def chunk_text(text, chunk_size=512):
+    # Break up the ,txt document by ' ' spaces
+    words = text.split()
+    return [' '.join(words[i:i + chunk_size]) for i in range(0, len(words), chunk_size)]
+print('Breaking text into chunks')
 
-    #read the file content
-    with open(output_txt, 'r', encoding = 'utf-8') as f:
+#Function to batch process and tokenise the text usint a 'Distilbert' from transformers hugging face
+def get_top_tokens(output_txt, model_name='distilbert-base-uncased', top_n=30):
+    # load the model of tokenizer from transformers
+    tokenizer = AutoTokenizer.from_pretrained(model_name, clean_up_tokenization_spaces=False)
+    print('Tokenizing')    
+    # read the text file specify the coding to ensure using the same ASCI codes
+    with open(output_txt, 'r', encoding='utf-8') as f:
         text = f.read()
-    #remove numbers and symbols and make lowercase
+
+    #Clean up the text, take out  non-alphanumeric characters and lowercase 
     text = re.sub(r'\W+', ' ', text.lower())
-    #tokenize the sorted text
-    tokens = tokenizer.tokenize(text)
-    
-    #count the frequency
-    token_counts = Counter(tokens)
-    
-    #return statement for the top n (30) most common
+
+    # Chunk the text to avoid exceeding the token limit
+    text_chunks = chunk_text(text, chunk_size=512)
+
+    # Token counter make list for the count
+    token_counts = Counter()
+
+    # Process each chunk separately
+    for chunk in text_chunks:
+        encoding = tokenizer.encode_plus(
+            chunk,
+            #Can chop the words if needed
+            truncation=True,  
+            #Make all the sequences the same length so can add blank space
+            padding='max_length',
+            #Use the maximum amount of tokenisation spots available in transformers (512)
+            max_length=512,
+            return_tensors='pt'
+        )
+        #Combine all the parts back to token list
+        tokens = tokenizer.convert_ids_to_tokens(encoding['input_ids'][0])
+        print('processing chunks of data back to tokens')
+        # Update the token counter list with this tokens
+        token_counts.update(tokens)
+    print('Counting Now')
+    # Return the top N most common tokens
     return token_counts.most_common(top_n)
 
-#get the top 30 and store them in a variable
+#label and find the top 30 tokens to call them into the csv
 top30_transformers = get_top_tokens(output_txt)
 
-#print(top30_transformers)
-for token, count in top30_transformers:
-    print(f'Word: {token}, Occurence: {count}')
-
-#save to a new csv document
+# Output file path for the CSV
 output_toptrans30_csv = "C:/Users/thete/OneDrive/Documents/GitHub/HIT137CAS080/Q1_working/Q1_file_output/HIT137_A2_Q3.2.csv"
 
-with open(output_toptrans30_csv, 'w', newline ='') as csv_file:
+# Opens csv to write data with two headers before data
+with open(output_toptrans30_csv, 'w', newline='') as csv_file:
     writer = csv.writer(csv_file)
-    #add in a header to the csv file for the columns and to compare later
-    writer.writerow (['Second Transformer Library Pass of TOP30'])
-    writer.writerow(['Word','Frequency'])
-    #Write the counts to the file
+    writer.writerow(['Second Transformer Library Pass of TOP30'])
+    writer.writerow(['Word', 'Frequency'])
+    
+    #Write each token and its frequency into the csv
     for word, count in top30_transformers:
-        writer.writerow ([word,count])
+        writer.writerow([word, count])
 
-#print the resulting dictionary
+# Print in terminal the list using the word and the counted occurance
 print('Here is a quick look at the list.')
 for word, count in top30_transformers:
     print(f'{word}: {count}')
-#show task is complete and location    
+#Print the file location of the csv    
 print(f'Your top 30 occurrences have been saved to {output_toptrans30_csv}')
